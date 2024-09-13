@@ -18,6 +18,9 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
+import useSortedData from '../hooks/use-sorted-data';
+import { handleDownload } from '@/lib/download';
+import usePagination from '../hooks/use-pagination';
 
 interface TableProps {
   title: string;
@@ -35,47 +38,18 @@ interface TableProps {
 }
 
 const DataTable: React.FC<TableProps> = ({ title, data }) => {
-  const [sortedData, setSortedData] = useState(data);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-
-  const handleSort = () => {
-    const newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-    setSortOrder(newSortOrder);
-
-    const sorted = [...sortedData].sort((a, b) => {
-      if (newSortOrder === 'asc') {
-        return a.key07 - b.key07;
-      } else {
-        return b.key07 - a.key07;
-      }
+  const { sortedData, sortOrder, handleSort } = useSortedData(data, 'key07');
+  const { currentPage, totalPages, nextPage, prevPage, setPage, getPageItems } =
+    usePagination({
+      totalItems: data.length,
+      itemsPerPage: 10,
+      initialPage: 1,
     });
-
-    setSortedData(sorted);
-  };
-
-  const handleDownload = () => {
-    const dataStr = JSON.stringify(sortedData, null, 2);
-    const dataUri =
-      'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-
-    const exportFileDefaultName = 'table-data.json';
-
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = sortedData.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
-
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
 
   return (
     <div className="w-full bg-white p-4">
@@ -88,14 +62,20 @@ const DataTable: React.FC<TableProps> = ({ title, data }) => {
             <TabsTrigger value="weekly">Weekly</TabsTrigger>
           </TabsList>
         </Tabs>
-        <Button variant="outline" size="sm" onClick={handleDownload}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handleDownload(data)}
+        >
           <Download className="h-4 w-4" />
         </Button>
       </div>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="">Reviewers</TableHead>
+            <TableHead className="" onClick={() => handleSort('name')}>
+              Reviewers
+            </TableHead>
             <TableHead className="text-center">Ratings</TableHead>
             <TableHead className="text-center">Comments</TableHead>
             <TableHead className="text-center">Tone</TableHead>
@@ -104,7 +84,7 @@ const DataTable: React.FC<TableProps> = ({ title, data }) => {
             <TableHead className="text-center">Tone</TableHead>
             <TableHead
               className="text-center cursor-pointer"
-              onClick={handleSort}
+              onClick={() => handleSort('key07')}
             >
               Score
               {sortOrder === 'asc' && (
@@ -200,7 +180,7 @@ const DataTable: React.FC<TableProps> = ({ title, data }) => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => handlePageChange(currentPage - 1)}
+            onClick={prevPage}
             disabled={currentPage === 1}
           >
             <ChevronLeft className="h-4 w-4" />
@@ -210,7 +190,7 @@ const DataTable: React.FC<TableProps> = ({ title, data }) => {
               key={page}
               variant={currentPage === page ? 'default' : 'outline'}
               size="sm"
-              onClick={() => handlePageChange(page)}
+              onClick={() => setPage(page)}
             >
               {page}
             </Button>
@@ -218,7 +198,7 @@ const DataTable: React.FC<TableProps> = ({ title, data }) => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => handlePageChange(currentPage + 1)}
+            onClick={nextPage}
             disabled={currentPage === totalPages}
           >
             <ChevronRight className="h-4 w-4" />
