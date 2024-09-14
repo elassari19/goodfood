@@ -62,7 +62,7 @@ const DataTable = ({ title, data }: TableProps) => {
         <h2 className="flex-1 text-xl font-bold">{title}</h2>
 
         <Tabs defaultValue="daily">
-          <TabsList>
+          <TabsList className="gap-2">
             <TabsTrigger value="daily">{t('Daily')}</TabsTrigger>
             <TabsTrigger value="weekly">{t('Weekly')}</TabsTrigger>
           </TabsList>
@@ -78,7 +78,10 @@ const DataTable = ({ title, data }: TableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="" onClick={() => handleSort('name')}>
+            <TableHead
+              className="text-start"
+              onClick={() => handleSort('name')}
+            >
               Reviewers
             </TableHead>
             <TableHead className="text-center">Ratings</TableHead>
@@ -109,8 +112,8 @@ const DataTable = ({ title, data }: TableProps) => {
               className="cursor-pointer hover:bg-gray-100"
             >
               <TableCell className="p-0 max-w-52">
-                <div className="flex items-center justify-start">
-                  <div className="w-8 h-8 p-0 rounded-full bg-gray-200 mr-2"></div>
+                <div className="flex items-center justify-start gap-2">
+                  <div className="w-8 h-8 p-0 rounded-full bg-gray-200"></div>
                   {row.name.split('-')[0]}
                 </div>
               </TableCell>
