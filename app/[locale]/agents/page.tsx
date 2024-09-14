@@ -2,11 +2,9 @@ import React from 'react';
 import Table from '@/components/table';
 import { agents } from '@/lib/dummy-data';
 
-interface IProps {
-  searchParams: string;
-}
+interface IProps {}
 
-const page = ({ searchParams }: IProps) => {
+const page = ({}: IProps) => {
   return (
     <div>
       <Table title="Agents" data={agents} />

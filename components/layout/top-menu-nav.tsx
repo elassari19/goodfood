@@ -1,6 +1,7 @@
 import React from 'react';
 import BurgerMenu from '@/components/burger-menu';
 import { BellDot } from 'lucide-react';
+import Translations from '@/components/translations';
 
 const TopMenuNav = () => {
   return (
@@ -10,6 +11,7 @@ const TopMenuNav = () => {
       </div>
       <div className="col-span-10">
         <div className="flex justify-end items-center gap-2 px-4">
+          <Translations />
           <BurgerMenu />
           <BellDot />
         </div>

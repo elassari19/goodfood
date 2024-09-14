@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,9 +18,11 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
-import useSortedData from '../hooks/use-sorted-data';
+import useSortedData from '@/hooks/use-sorted-data';
 import { handleDownload } from '@/lib/download';
-import usePagination from '../hooks/use-pagination';
+import usePagination from '@/hooks/use-pagination';
+import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 interface TableProps {
   title: string;
@@ -37,7 +39,10 @@ interface TableProps {
   }>;
 }
 
-const DataTable: React.FC<TableProps> = ({ title, data }) => {
+const DataTable = ({ title, data }: TableProps) => {
+  const pathName = usePathname();
+
+  const t = useTranslations('');
   const itemsPerPage = 10;
   const { sortedData, sortOrder, handleSort } = useSortedData(data, 'key07');
   const { currentPage, totalPages, nextPage, prevPage, setPage, getPageItems } =
@@ -58,8 +63,8 @@ const DataTable: React.FC<TableProps> = ({ title, data }) => {
 
         <Tabs defaultValue="daily">
           <TabsList>
-            <TabsTrigger value="daily">Daily</TabsTrigger>
-            <TabsTrigger value="weekly">Weekly</TabsTrigger>
+            <TabsTrigger value="daily">{t('Daily')}</TabsTrigger>
+            <TabsTrigger value="weekly">{t('Weekly')}</TabsTrigger>
           </TabsList>
         </Tabs>
         <Button
@@ -172,9 +177,9 @@ const DataTable: React.FC<TableProps> = ({ title, data }) => {
       </Table>
       <div className="flex items-center justify-between mt-4">
         <div>
-          Showing {indexOfFirstItem + 1} to{' '}
-          {Math.min(indexOfLastItem, sortedData.length)} of {sortedData.length}{' '}
-          entries
+          {t('Showing')} {indexOfFirstItem + 1} {t('to')}{' '}
+          {Math.min(indexOfLastItem, sortedData.length)} {t('of')}{' '}
+          {sortedData.length}{' '}
         </div>
         <div className="flex items-center space-x-2">
           <Button
@@ -183,7 +188,11 @@ const DataTable: React.FC<TableProps> = ({ title, data }) => {
             onClick={prevPage}
             disabled={currentPage === 1}
           >
-            <ChevronLeft className="h-4 w-4" />
+            {pathName?.split('/')[1] == 'en' ? (
+              <ChevronLeft className="h4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
           </Button>
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <Button
@@ -201,7 +210,11 @@ const DataTable: React.FC<TableProps> = ({ title, data }) => {
             onClick={nextPage}
             disabled={currentPage === totalPages}
           >
-            <ChevronRight className="h-4 w-4" />
+            {pathName?.split('/')[1] == 'en' ? (
+              <ChevronRight className="h4 w-4" />
+            ) : (
+              <ChevronLeft className="h-4 w-4" />
+            )}
           </Button>
         </div>
       </div>

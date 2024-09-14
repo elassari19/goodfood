@@ -2,15 +2,15 @@ import DashboardCard from '@/components/dashboard-card';
 import LineChart from '@/components/line-chart';
 import DataTable from '@/components/table';
 import { table1, table2 } from '@/lib/dummy-data';
+import { getTranslations } from 'next-intl/server';
 
-interface IProps {
-  params: string;
-}
+interface IProps {}
 
-export default async function Home({ params }: IProps) {
+export default async function Home({}: IProps) {
+  const t = await getTranslations('');
   return (
     <div>
-      <h1 className="font-bold text-xl py-2">Dashboard</h1>
+      <h1 className="font-bold text-xl py-2">{t('dashboard')}</h1>
       <div className="bg-primary-foreground w-full rounded-sm grid grid-cols-10 gap-2 p-2">
         {/* cards */}
         <div className="col-span-4 grid grid-cols-2 gap-2">
@@ -40,11 +40,11 @@ export default async function Home({ params }: IProps) {
           ].map((item) => (
             <DashboardCard
               key={item.title}
-              title={item.title}
+              title={t(item.title)}
               value={item.value}
               average={item.average}
               score={item.score}
-              scoreName={item.scoreNmae}
+              scoreName={t(item.scoreNmae)}
             />
           ))}
         </div>
@@ -52,11 +52,11 @@ export default async function Home({ params }: IProps) {
           <LineChart />
         </div>
         <div className="col-span-full">
-          <DataTable title="Scores by category" data={table1} />
+          <DataTable title={t('Scores by category')} data={table1} />
         </div>
       </div>
       <div className="col-span-full">
-        <DataTable title="Scores by reviews" data={table2} />
+        <DataTable title={t('Scores by reviews')} data={table2} />
       </div>
     </div>
   );

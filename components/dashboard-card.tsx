@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from '../lib/utils';
+import { cn } from '@/lib/utils';
 
 interface IProps {
   title: string;
@@ -37,8 +37,8 @@ const dashboardCard = ({ title, value, average, score, scoreName }: IProps) => {
               {average}
             </div>
           </div>
-          <div>
-            <span className="font-bold">{score}</span> {scoreName}
+          <div className="flex items-center justify-center gap-2">
+            <div className="font-bold">{score}</div> <div>{scoreName}</div>
           </div>
         </div>
       ) : (
